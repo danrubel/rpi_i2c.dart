@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# Build the librpi_i2c_ext.so native library on the Raspberry Pi.
+# The generated native library file is referenced by rpi_i2c.dart via
+# import 'dart-ext:rpi_i2c_ext'
+#
+# Arguments: <buildScriptVersion> <DartSdkPath>
+#
+# Typically, this script is run by calling
+#
+#    pub global run rpi_i2c:build_lib
+#
+# See README for setup instructions
+
+# exit on error
+set -e
+
+#DARTVM=$(readlink `which dart`)
+#DARTBIN=$(dirname $DARTVM)
+#DARTSDK=$(dirname $DARTBIN)
+DARTSDK=$2
+
+cd $(dirname $0)
+echo building rpi_i2c in `pwd`
+
+####################################################################
+# Build rpi_i2c native library
+
+g++ -fPIC -I$DARTSDK/ -c rpi_i2c_ext.cc
+# use --no-undefined to check for missing libraries
+gcc -shared -lpthread -Wl,-soname,librpi_i2c_ext.so -o librpi_i2c_ext.so rpi_i2c_ext.o
+
+# Copy the library
+cp librpi_i2c_ext.so ../../librpi_i2c_ext.so
