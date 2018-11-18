@@ -44,15 +44,27 @@ class RpiI2CDevice extends I2CDevice {
   int readByte(int register) => _throwIfNegative(_readByte(_fd, register));
 
   @override
-  int writeByte(int register, int data) =>
-      _throwIfNegative(_writeByte(_fd, register, data));
+  int readBytes(List<int> values) {
+    if (values == null || values.length < 1 || values.length > 32)
+      throw new I2CException(
+          'Expected values length between 1 and 32', address);
+    return _throwIfNegative(_readBytes(_fd, values));
+  }
+
+  @override
+  void writeByte(int register, int value) {
+    _throwIfNegative(_writeByte(_fd, register, value));
+  }
 
   /// Throw an exception if [value] is less than zero, else return [value].
   int _throwIfNegative(int value) {
-    if (value < 0) throw new I2CException('operation failed: $value', address);
+    if (value < 0)
+      throw new I2CException('operation failed: $value', address, _lastError());
     return value;
   }
 
+  int _lastError() native "lastError";
   int _readByte(int fd, int register) native "readByte";
+  int _readBytes(int fd, List<int> values) native "readBytes";
   int _writeByte(int fd, int register, int data) native "writeByte";
 }

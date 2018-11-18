@@ -2,7 +2,6 @@
 
 [![pub package](https://img.shields.io/pub/v/rpi_i2c.svg)](https://pub.dartlang.org/packages/rpi_ic2)
 [![Build Status](https://travis-ci.org/danrubel/rpi_i2c.dart.svg?branch=master)](https://travis-ci.org/danrubel/rpi_i2c.dart)
-[![Coverage Status](https://coveralls.io/repos/danrubel/rpi_i2c.dart/badge.svg?branch=master&service=github)](https://coveralls.io/github/danrubel/rpi_i2c.dart?branch=master)
 
 rpi_i2c is a Dart package for using I2C on the Raspberry Pi.
 
@@ -48,7 +47,38 @@ rpi_i2c:build_lib runs the [rpi_i2c/bin/build_lib.dart](bin/build_lib.dart)
 program which in turn calls the [build_lib](lib/src/native/build_lib) script
 to compile the native librpi_i2c_ext.so library for the rpi_i2c package.
 
-## Example
+## Examples
 
- * A [Mpl3115a2 example](example/mpl3115a2.dart) demonstrates using the I2C protocol to read altitude,
-   pressure, and temperature from a [Mpl3115a2](https://www.nxp.com/docs/en/data-sheet/MPL3115A2.pdf)
+ * [example.dart](example/example.dart) demonstrates instantiating and accessing an I2C device
+
+ * [mpl3115a2.dart](example/mpl3115a2.dart) demonstrates how the I2C API is used
+   to interact with a [Mpl3115a2](https://www.nxp.com/docs/en/data-sheet/MPL3115A2.pdf)
+
+ * [example_ttp229.dart](example/example_ttp229.dart) demonstrates instantiating and accessing
+   the TTP229 touchpad over I2C
+
+ * [ttp229.dart](example/ttp229.dart) demonstrates how the I2C API is used
+   to interact with a [TTP229](See http://www.tontek.com.tw/uploads/product/106/TTP229-LSF_V1.0_EN.pdf) touchpad
+
+Both of these devices can be connected to the I2C bus at the same time.
+Connect the following [pins on the Raspberry Pi](https://www.raspberrypi.org/documentation/usage/gpio/)
+to pins on the [Adafruit MPL3115A2](https://www.adafruit.com/product/1893)
+and pins on the [TTP229 Touchpad](https://robotdyn.com/16-keys-capacitive-touch-ttp229-i2c-module.html)
+
+It is recommended to attach
+[two 4.7K pullup resistors](https://learn.sparkfun.com/tutorials/i2c/i2c-at-the-hardware-level),
+one to the SDA line and a second to the SDL line,
+althrough with some device boards already have pullup resistors on them.
+If you have many I2C devices and/or a long I2C bus, you many need a different value
+as per [I2C pullup resistor recommendations](https://www.google.com/search?q=i2c+pullup+resistor).
+
+| Rpi Pin              | MPL3115A2 | TTP229    |
+| -------------------- | --------- |---------- |
+| PIN #1 (3.3v)        | 3V        | 3V        |
+| PIN #3 (SDA1 / I2C)  | SDA       | SDA       | <-- one 4.7K resistor from here to 3.3V
+| PIN #3 (SDL1 / I2C)  | SDL       | SDL       | <-- another 4.7K resistor from here to 3.3V
+| PIN #6 (GND)         | GND       | GND       |
+
+With thanks to Pierre Henelle for the [RPi_MPL3115A2 library](https://github.com/phenelle/RPi_MPL3115A2)
+for wiring and inspiration. In that library's readme, there's a good
+[picture of the RPi connected to the MPL3115A2](https://github.com/phenelle/RPi_MPL3115A2#wiring-to-the-pi).

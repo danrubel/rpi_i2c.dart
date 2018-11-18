@@ -79,6 +79,18 @@ static inline int i2c_smbus_access(int fd, char rw, uint8_t command, int size, u
 // * https://www.kernel.org/doc/Documentation/i2c/dev-interface
 // * https://www.kernel.org/doc/Documentation/i2c/smbus-protocol
 
+// The errno from the last I2C command
+static volatile int64_t lastErrno = 0;
+
+// Return the errno from the last I2C command
+//int _lastError() native "lastError";
+void lastError(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+
+  Dart_SetIntegerReturnValue(arguments, lastErrno);
+  Dart_ExitScope();
+}
+
 // Setup the I2C device at the given address and return the file id.
 // Negative return values indicate an error.
 //int _setupDevice(int address) native "setupDevice";
@@ -97,11 +109,14 @@ void setupDevice(Dart_NativeArguments arguments) {
 
   if ((fd = open(device, O_RDWR)) < 0) {
     result = -1;
+    lastErrno = errno;
   } else if (ioctl(fd, I2C_SLAVE, address) < 0) {
     close(fd);
     result = -2;
+    lastErrno = errno;
   } else {
     result = fd;
+    lastErrno = 0;
   }
 
   Dart_SetIntegerReturnValue(arguments, result);
@@ -121,8 +136,10 @@ void disposeDevice(Dart_NativeArguments arguments) {
   int64_t result;
   if (close(fd) < 0) {
     result = -1;
+    lastErrno = errno;
   } else {
     result = 0;
+    lastErrno = 0;
   }
 
   Dart_SetIntegerReturnValue(arguments, result);
@@ -146,8 +163,36 @@ void readByte(Dart_NativeArguments arguments) {
   union i2c_smbus_data data;
   if (i2c_smbus_access(fd, I2C_SMBUS_READ, reg, I2C_SMBUS_BYTE_DATA, &data)) {
     result = -1;
+    lastErrno = errno;
   } else {
     result = data.byte & 0xFF;
+    lastErrno = 0;
+  }
+
+  Dart_SetIntegerReturnValue(arguments, result);
+  Dart_ExitScope();
+}
+
+// Read 1 to 32 bytes from the device (not a register on the device).
+// Return the number of bytes read.
+// Negative return values indicate an error.
+//int _readBytes(int fd, List<int> values) native "readBytes";
+void readBytes(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+  Dart_Handle arg1 = HandleError(Dart_GetNativeArgument(arguments, 1));
+  Dart_Handle dartList = HandleError(Dart_GetNativeArgument(arguments, 2));
+
+  int64_t fd;
+  HandleError(Dart_IntegerToInt64(arg1, &fd));
+
+  int length;
+  HandleError(Dart_ListLength(dartList, &length));
+
+  char buf[34];
+  int64_t result = read(fd, buf, length);
+  for (int index = 0; index < length; ++index) {
+    HandleError(Dart_ListSetAt(
+      dartList, index, HandleError(Dart_NewInteger(buf[index]))));
   }
 
   Dart_SetIntegerReturnValue(arguments, result);
@@ -175,6 +220,9 @@ void writeByte(Dart_NativeArguments arguments) {
   data.byte = value & 0xFF;
   if (i2c_smbus_access(fd, I2C_SMBUS_WRITE, reg, I2C_SMBUS_BYTE_DATA, &data)) {
     result = -1;
+    lastErrno = errno;
+  } else {
+    lastErrno = 0;
   }
 
   Dart_SetIntegerReturnValue(arguments, result);
@@ -190,7 +238,9 @@ struct FunctionLookup {
 
 FunctionLookup function_list[] = {
   {"disposeDevice", disposeDevice},
+  {"lastError", lastError},
   {"readByte", readByte},
+  {"readBytes", readBytes},
   {"setupDevice", setupDevice},
   {"writeByte", writeByte},
   {NULL, NULL}

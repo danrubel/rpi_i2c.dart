@@ -23,12 +23,14 @@ class Mpl3115a2 {
   /// Either altitude or pressure can be read,
   /// depending upon the altitude parameter, but not both.
   Future<Mpl3115a2Data> read({bool altitude}) async {
+    altitude ??= false;
+
     // Turn on events when new data is ready.
     device.writeByte(/* PT_DATA_CFG */ 0x13, 0x07);
 
     // Initiate an immediate measurement (OST).
     int ctrlValue = /* OST */ 0x02;
-    if (altitude == true) ctrlValue |= /* ALT */ 0x80;
+    if (altitude) ctrlValue |= /* ALT */ 0x80;
     device.writeByte(/* CTRL_REG1 */ 0x26, ctrlValue);
 
     // Collect the data and return the result
