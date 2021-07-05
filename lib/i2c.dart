@@ -40,8 +40,8 @@ abstract class I2CDevice {
 /// Exceptions thrown by I2C.
 class I2CException {
   final String message;
-  final int address;
-  final int errorNumber;
+  final int? address;
+  final int? errorNumber;
 
   I2CException(this.message, [this.address, this.errorNumber]);
 

@@ -6,15 +6,15 @@ import 'package:test/test.dart';
 
 import 'test_util.dart';
 
-main() {
+void main() {
   final i2c = RpiI2C();
   runTests(i2c);
   test('dispose', () => i2c.dispose());
 }
 
-runTests(I2C i2c) {
-  Mpl3115a2 mpl3115a2;
-  double lastTemperature;
+void runTests(I2C i2c) {
+  late Mpl3115a2 mpl3115a2;
+  late double lastTemperature;
 
   test('instantiate once', () async {
     mpl3115a2 = Mpl3115a2(i2c);
@@ -25,7 +25,7 @@ runTests(I2C i2c) {
     final result = await mpl3115a2.read(altitude: true);
     expect(result, isNotNull);
     printResult(result);
-    expect(result.altitude > 0.0, isTrue);
+    expect(result.altitude! > 0.0, isTrue);
     expect(result.pressure, isNull);
     expect(result.temperature > 0.0, isTrue);
     lastTemperature = result.temperature;
@@ -36,7 +36,7 @@ runTests(I2C i2c) {
     expect(result, isNotNull);
     printResult(result);
     expect(result.altitude, isNull);
-    expect(result.pressure > 0.0, isTrue);
+    expect(result.pressure! > 0.0, isTrue);
     expect(result.temperature > 0.0, isTrue);
     expect((result.temperature - lastTemperature).abs() < 0.5, isTrue);
   });

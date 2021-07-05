@@ -8,8 +8,8 @@ class Ttp229 {
   Ttp229(I2C i2c) : device = i2c.device(/* I2C device address */ 0x57);
 
   Ttp229Keys get keysPressed {
-    List<int> bytes = List<int>(2);
-    int count = device.readBytes(bytes);
+    var bytes = [0, 0];
+    var count = device.readBytes(bytes);
     if (count != 2)
       throw I2CException(
           'Expected 2 bytes read, but was $count', device.address);

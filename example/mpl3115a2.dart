@@ -16,21 +16,19 @@ class Mpl3115a2 {
     }
   }
 
-  /// Take a one-time altitude / pressure / temperature reading
-  /// and return a structure containing the resulting values
-  /// or `null` if the operation was unsuccessful.
+  /// Wait for the device to take a one-time
+  /// altitude / pressure / temperature reading
+  /// and return a structure containing the resulting values.
+  /// Throw a [TimeoutException] if the device takes too long.
   ///
   /// Either altitude or pressure can be read,
   /// depending upon the altitude parameter, but not both.
-  Future<Mpl3115a2Data> read({bool altitude}) async {
-    altitude ??= false;
-
+  Future<Mpl3115a2Data> read({bool altitude = false}) async {
     // Turn on events when new data is ready.
     device.writeByte(/* PT_DATA_CFG */ 0x13, 0x07);
 
     // Initiate an immediate measurement (OST).
-    int ctrlValue = /* OST */ 0x02;
-    if (altitude) ctrlValue |= /* ALT */ 0x80;
+    var ctrlValue = altitude ? /* ALT | OST */ 0x82 : /* OST */ 0x02;
     device.writeByte(/* CTRL_REG1 */ 0x26, ctrlValue);
 
     // Collect the data and return the result
@@ -38,11 +36,9 @@ class Mpl3115a2 {
     device.writeByte(/* STATUS */ 0x00, 0x00);
 
     // Wait for the device to capture current values in the registers.
-    int wait = 0;
+    var wait = 0;
     while (device.readByte(/* CTRL_REG1 */ 0x26) & /* OST */ 0x02 != 0) {
-      if (++wait > 500) {
-        return null;
-      }
+      if (++wait > 500) throw TimeoutException('Failed to read data');
       await Future.delayed(const Duration(milliseconds: 1));
     }
 
@@ -61,10 +57,10 @@ class Mpl3115a2 {
 /// and either altitude or pressure but not both.
 class Mpl3115a2Data {
   /// The altitude in meters or `null` if the [pressure] was read instead.
-  final double altitude;
+  final double? altitude;
 
   /// The pressure in Pascals or `null` if the [altitude] was read instead.
-  final double pressure;
+  final double? pressure;
 
   /// The temperature in degrees C.
   final double temperature;

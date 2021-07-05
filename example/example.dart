@@ -11,10 +11,9 @@ main() async {
 }
 
 Future readSensor(Mpl3115a2 mpl3115a2) async {
-  Mpl3115a2Data result;
 
   print('Pressure and temperature:');
-  result = await mpl3115a2.read();
+  var result = await mpl3115a2.read();
   print('  pressure: ${result.pressure} pascals');
   print('  temperature: ${result.temperature} celsius');
 

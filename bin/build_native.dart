@@ -72,8 +72,8 @@ void abortIf(bool condition, String message) {
 void assertNoPubListError(Map<String, dynamic> pubResult) {
   var error = pubResult['error'];
   if (error == null) {
-    Map<String, dynamic> packages =
-        pubResult['packages'] as Map<String, dynamic>;
+    Map<String, dynamic>? packages =
+        pubResult['packages'] as Map<String, dynamic>?;
     if (packages != null) {
       var rpiGpio = packages[pkgName];
       if (rpiGpio != null) {

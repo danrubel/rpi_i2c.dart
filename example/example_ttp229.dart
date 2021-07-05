@@ -12,7 +12,7 @@ main() async {
 }
 
 Future readTouchPad(Ttp229 touchpad) async {
-  StreamSubscription<ProcessSignal> subscription;
+  late StreamSubscription<ProcessSignal> subscription;
   bool running = true;
 
   print('------ press ctrl-c to exit ------');
@@ -27,7 +27,7 @@ Future readTouchPad(Ttp229 touchpad) async {
   // 2) use the rpi_gpio package to watch that pin, and
   // 3) read the touchpad when that pin's state changes.
 
-  Ttp229Keys lastKeys;
+  Ttp229Keys? lastKeys;
   while (running) {
     Ttp229Keys keys = touchpad.keysPressed;
     if (lastKeys != keys) {

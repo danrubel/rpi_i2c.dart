@@ -12,7 +12,7 @@ main() {
 }
 
 runTests(I2C i2c) {
-  Ttp229 ttp229;
+  late Ttp229 ttp229;
 
   test('instantiate once', () async {
     ttp229 = Ttp229(i2c);
@@ -20,7 +20,7 @@ runTests(I2C i2c) {
   });
 
   test('read bytes', () async {
-    final values = List<int>(2);
+    final values = [0, 0];
     final count = ttp229.device.readBytes(values);
     expect(count, 2);
     expect(values[0], 0);

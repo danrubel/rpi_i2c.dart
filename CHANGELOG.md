@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.0
+ * migrate to null safety
+
 ## 0.2.0
  * rename `build_lib` to `build_native`
  * loosen SDK requirements to allow execution on older Rasberry Pi models
