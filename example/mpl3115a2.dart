@@ -11,7 +11,7 @@ class Mpl3115a2 {
     // Sanity check the device
     final whoAmI = device.readByte(0x0C);
     if (whoAmI != 0xC4) {
-      throw new I2CException(
+      throw I2CException(
           'Expected device identifier 196, but got $whoAmI', device.address);
     }
   }
@@ -43,10 +43,10 @@ class Mpl3115a2 {
       if (++wait > 500) {
         return null;
       }
-      await new Future.delayed(const Duration(milliseconds: 1));
+      await Future.delayed(const Duration(milliseconds: 1));
     }
 
-    return new Mpl3115a2Data._(
+    return Mpl3115a2Data._(
       altitude,
       device.readByte(/* OUT_P_MSB */ 0x01),
       device.readByte(/* OUT_P_CSB */ 0x02),

@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 import 'test_util.dart';
 
 main() {
-  final i2c = new RpiI2C();
+  final i2c = RpiI2C();
   runTests(i2c);
   test('dispose', () => i2c.dispose());
 }
@@ -15,12 +15,12 @@ runTests(I2C i2c) {
   Ttp229 ttp229;
 
   test('instantiate once', () async {
-    ttp229 = new Ttp229(i2c);
-    await expectThrows(() => new Ttp229(i2c));
+    ttp229 = Ttp229(i2c);
+    await expectThrows(() => Ttp229(i2c));
   });
 
   test('read bytes', () async {
-    final values = new List<int>(2);
+    final values = List<int>(2);
     final count = ttp229.device.readBytes(values);
     expect(count, 2);
     expect(values[0], 0);

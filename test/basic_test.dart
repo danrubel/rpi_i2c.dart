@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 import 'test_util.dart';
 
 main() {
-  final i2c = new RpiI2C();
+  final i2c = RpiI2C();
   runTests(i2c);
   test('dispose', () => i2c.dispose());
 }
@@ -13,6 +13,6 @@ main() {
 runTests(I2C i2c) {
   test('exceptions', () async {
     // Only one instance of I2C factory
-    await expectThrows(() => new RpiI2C());
+    await expectThrows(() => RpiI2C());
   });
 }

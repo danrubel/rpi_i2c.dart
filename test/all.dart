@@ -6,7 +6,7 @@ import 'mpl3115a2_test.dart' as mpl3115a2;
 import 'ttp229_test.dart' as ttp229;
 
 main() {
-  final i2c = new RpiI2C();
+  final i2c = RpiI2C();
   group('basic', () => basic.runTests(i2c));
   group('mpl3115a2', () => mpl3115a2.runTests(i2c));
   group('ttp229', () => ttp229.runTests(i2c));

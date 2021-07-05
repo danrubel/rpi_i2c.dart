@@ -7,7 +7,7 @@ abstract class I2C {
   /// This should be called by subclasses not clients.
   void allocateAddress(int address) {
     if (_allocatedAddresses.contains(address)) {
-      throw new I2CException('Already allocated', address);
+      throw I2CException('Already allocated', address);
     }
     _allocatedAddresses.add(address);
   }

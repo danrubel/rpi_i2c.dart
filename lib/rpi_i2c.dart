@@ -9,7 +9,7 @@ class RpiI2C extends I2C {
   final _devices = <RpiI2CDevice>[];
 
   RpiI2C() {
-    if (_instantiatedI2C) throw new I2CException('RpiI2C already instantiated');
+    if (_instantiatedI2C) throw I2CException('RpiI2C already instantiated');
     _instantiatedI2C = true;
   }
 
@@ -17,8 +17,8 @@ class RpiI2C extends I2C {
   I2CDevice device(int address) {
     allocateAddress(address);
     int fd = _setupDevice(address);
-    if (fd < 0) throw new I2CException('device init failed: $fd');
-    final device = new RpiI2CDevice(address, fd);
+    if (fd < 0) throw I2CException('device init failed: $fd');
+    final device = RpiI2CDevice(address, fd);
     _devices.add(device);
     return device;
   }
@@ -27,7 +27,7 @@ class RpiI2C extends I2C {
   void dispose() {
     while (_devices.isNotEmpty) {
       int result = _disposeDevice(_devices.removeLast()._fd);
-      if (result != 0) throw new I2CException('dispose failed: $result');
+      if (result != 0) throw I2CException('dispose failed: $result');
     }
   }
 
@@ -45,9 +45,8 @@ class RpiI2CDevice extends I2CDevice {
 
   @override
   int readBytes(List<int> values) {
-    if (values == null || values.length < 1 || values.length > 32)
-      throw new I2CException(
-          'Expected values length between 1 and 32', address);
+    if (values == null || values.isEmpty || values.length > 32)
+      throw I2CException('Expected values length between 1 and 32', address);
     return _throwIfNegative(_readBytes(_fd, values));
   }
 
@@ -59,7 +58,7 @@ class RpiI2CDevice extends I2CDevice {
   /// Throw an exception if [value] is less than zero, else return [value].
   int _throwIfNegative(int value) {
     if (value < 0)
-      throw new I2CException('operation failed: $value', address, _lastError());
+      throw I2CException('operation failed: $value', address, _lastError());
     return value;
   }
 

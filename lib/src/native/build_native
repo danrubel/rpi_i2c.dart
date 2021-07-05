@@ -8,7 +8,7 @@
 #
 # Typically, this script is run by calling
 #
-#    pub global run rpi_i2c:build_lib
+#    pub global run rpi_i2c:build_native
 #
 # See README for setup instructions
 

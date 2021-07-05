@@ -6,8 +6,8 @@ import 'package:rpi_i2c/rpi_i2c.dart';
 import 'ttp229.dart';
 
 main() async {
-  final i2c = new RpiI2C();
-  await readTouchPad(new Ttp229(i2c));
+  final i2c = RpiI2C();
+  await readTouchPad(Ttp229(i2c));
   i2c.dispose();
 }
 
@@ -34,12 +34,12 @@ Future readTouchPad(Ttp229 touchpad) async {
       lastKeys = keys;
       printKeys(keys);
     }
-    await new Future.delayed(new Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 500));
   }
 }
 
 void printKeys(Ttp229Keys keys) {
-  final buf = new StringBuffer();
+  final buf = StringBuffer();
   for (int index = 0; index < 16; ++index) {
     if (keys.key(index)) {
       if (buf.isNotEmpty) buf.write(', ');

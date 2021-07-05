@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+ * rename `build_lib` to `build_native`
+ * loosen SDK requirements to allow execution on older Rasberry Pi models
+ * update readme
+ * update build script to work on Windows
+
 ## 0.1.1
  * Add I2C readBytes support
  * Add TTP229 touchpad example

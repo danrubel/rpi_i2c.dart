@@ -1,7 +1,6 @@
 # rpi_i2c.dart
 
 [![pub package](https://img.shields.io/pub/v/rpi_i2c.svg)](https://pub.dartlang.org/packages/rpi_ic2)
-[![Build Status](https://travis-ci.org/danrubel/rpi_i2c.dart.svg?branch=master)](https://travis-ci.org/danrubel/rpi_i2c.dart)
 
 rpi_i2c is a Dart package for using I2C on the Raspberry Pi.
 
@@ -11,7 +10,7 @@ rpi_i2c is a Dart package for using I2C on the Raspberry Pi.
    using the [I2C protocol](https://en.wikipedia.org/wiki/I%C2%B2C)
 
  * The [__RpiI2C__](lib/rpi_i2c.dart) library provides implementation of
-   the I2C protocol on the Raspberry Pi derived from the [WiringPi](http://wiringpi.com/) library.
+   the I2C protocol on the Raspberry Pi derived from the WiringPi library.
 
 ## Setup
 
@@ -36,15 +35,15 @@ you upgrade the rpi_i2c package.
 2) From your application directory (the application that references
 the rpi_i2c package) run the following command to build the native library
 ```
-    pub global run rpi_i2c:build_lib
+    pub global run rpi_i2c:build_native
 ```
 
 [pub global activate](https://www.dartlang.org/tools/pub/cmd/pub-global.html#activating-a-package)
 makes the Dart scripts in the rpi_i2c/bin directory runnable
 from the command line.
 [pub global run](https://www.dartlang.org/tools/pub/cmd/pub-global.html#running-a-script)
-rpi_i2c:build_lib runs the [rpi_i2c/bin/build_lib.dart](bin/build_lib.dart)
-program which in turn calls the [build_lib](lib/src/native/build_lib) script
+rpi_i2c:build_native runs the [rpi_i2c/bin/build_native.dart](bin/build_native.dart)
+program which in turn calls the [build_native](lib/src/native/build_native) script
 to compile the native librpi_i2c_ext.so library for the rpi_i2c package.
 
 ## Examples
@@ -58,7 +57,7 @@ to compile the native librpi_i2c_ext.so library for the rpi_i2c package.
    the TTP229 touchpad over I2C
 
  * [ttp229.dart](example/ttp229.dart) demonstrates how the I2C API is used
-   to interact with a [TTP229](See http://www.tontek.com.tw/uploads/product/106/TTP229-LSF_V1.0_EN.pdf) touchpad
+   to interact with a [TTP229](See https://www.tontek.com.tw/uploads/product/106/TTP229-LSF_V1.0_EN.pdf) touchpad
 
 Both of these devices can be connected to the I2C bus at the same time.
 Connect the following [pins on the Raspberry Pi](https://www.raspberrypi.org/documentation/usage/gpio/)
@@ -72,12 +71,12 @@ althrough with some device boards already have pullup resistors on them.
 If you have many I2C devices and/or a long I2C bus, you many need a different value
 as per [I2C pullup resistor recommendations](https://www.google.com/search?q=i2c+pullup+resistor).
 
-| Rpi Pin              | MPL3115A2 | TTP229    |
-| -------------------- | --------- |---------- |
-| PIN #1 (3.3v)        | 3V        | 3V        |
-| PIN #3 (SDA1 / I2C)  | SDA       | SDA       | <-- one 4.7K resistor from here to 3.3V
-| PIN #3 (SDL1 / I2C)  | SDL       | SDL       | <-- another 4.7K resistor from here to 3.3V
-| PIN #6 (GND)         | GND       | GND       |
+| Rpi Pin              | MPL3115A2 | TTP229    | Pull-up Resistors       |
+| -------------------- | --------- |---------- | ----------------------- |
+| PIN #1 (3.3v)        | 3V        | 3V        |                         |
+| PIN #3 (SDA1 / I2C)  | SDA       | SDA       | 4.7K resistor to 3.3V   |
+| PIN #3 (SDL1 / I2C)  | SDL       | SDL       | 4.7K resistor to 3.3V   |
+| PIN #6 (GND)         | GND       | GND       |                         |
 
 With thanks to Pierre Henelle for the [RPi_MPL3115A2 library](https://github.com/phenelle/RPi_MPL3115A2)
 for wiring and inspiration. In that library's readme, there's a good
