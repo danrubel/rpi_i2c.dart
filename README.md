@@ -1,6 +1,6 @@
 # rpi_i2c.dart
 
-[![pub package](https://img.shields.io/pub/v/rpi_i2c.svg)](https://pub.dartlang.org/packages/rpi_ic2)
+[![pub package](https://img.shields.io/pub/v/rpi_i2c.svg)](https://pub.dartlang.org/packages/rpi_i2c)
 
 rpi_i2c is a Dart package for using I2C on the Raspberry Pi.
 
