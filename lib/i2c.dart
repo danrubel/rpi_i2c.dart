@@ -28,6 +28,9 @@ abstract class I2CDevice {
   /// Read a byte from register #[register].
   int readByte(int register);
 
+  /// Read a 16 bit value from register #[register] or two consecutive registers.
+  int readWord(int register);
+
   /// Read [values].length # of bytes from the device (no register)
   /// into [values] where the [values].length is between 1 and 32 inclusive.
   /// Return the # of bytes read.
@@ -47,7 +50,7 @@ class I2CException {
 
   @override
   String toString() {
-    String msg = message;
+    var msg = message;
     if (address != null) msg = '$msg, address: $address';
     if (errorNumber != null) msg = '$msg, error: $errorNumber';
     return 'I2CException: $msg';

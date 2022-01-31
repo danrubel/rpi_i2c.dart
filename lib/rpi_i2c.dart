@@ -16,7 +16,7 @@ class RpiI2C extends I2C {
   @override
   I2CDevice device(int address) {
     allocateAddress(address);
-    int fd = _setupDevice(address);
+    var fd = _setupDevice(address);
     if (fd < 0) throw I2CException('device init failed: $fd');
     final device = RpiI2CDevice(address, fd);
     _devices.add(device);
@@ -26,13 +26,13 @@ class RpiI2C extends I2C {
   @override
   void dispose() {
     while (_devices.isNotEmpty) {
-      int result = _disposeDevice(_devices.removeLast()._fd);
+      var result = _disposeDevice(_devices.removeLast()._fd);
       if (result != 0) throw I2CException('dispose failed: $result');
     }
   }
 
-  int _setupDevice(int address) native "setupDevice";
-  int _disposeDevice(int fd) native "disposeDevice";
+  int _setupDevice(int address) native 'setupDevice';
+  int _disposeDevice(int fd) native 'disposeDevice';
 }
 
 class RpiI2CDevice extends I2CDevice {
@@ -44,8 +44,11 @@ class RpiI2CDevice extends I2CDevice {
   int readByte(int register) => _throwIfNegative(_readByte(_fd, register));
 
   @override
+  int readWord(int register) => _throwIfNegative(_readWord(_fd, register));
+
+  @override
   int readBytes(List<int> values) {
-    if (values == null || values.isEmpty || values.length > 32)
+    if (values.isEmpty || values.length > 32)
       throw I2CException('Expected values length between 1 and 32', address);
     return _throwIfNegative(_readBytes(_fd, values));
   }
@@ -62,8 +65,9 @@ class RpiI2CDevice extends I2CDevice {
     return value;
   }
 
-  int _lastError() native "lastError";
-  int _readByte(int fd, int register) native "readByte";
-  int _readBytes(int fd, List<int> values) native "readBytes";
-  int _writeByte(int fd, int register, int data) native "writeByte";
+  int _lastError() native 'lastError';
+  int _readByte(int fd, int register) native 'readByte';
+  int _readBytes(int fd, List<int> values) native 'readBytes';
+  int _readWord(int fd, int register) native 'readWord';
+  int _writeByte(int fd, int register, int data) native 'writeByte';
 }

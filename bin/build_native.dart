@@ -6,36 +6,31 @@ import 'package:path/path.dart';
 const pkgName = 'rpi_i2c';
 const buildScriptVersion = 2;
 
-main(List<String> args) {
+void main(List<String> args) {
   // Locate the Dart SDK
-  File dartVm = File(Platform.executable);
+  var dartVm = File(Platform.resolvedExecutable);
   print('Dart VM... ${dartVm.path}');
-  if (!dartVm.isAbsolute) {
-    dartVm = File.fromUri(Directory.current.uri.resolve(dartVm.path));
-    print('Dart VM... ${dartVm.path}');
-  }
-  abortIf(!dartVm.isAbsolute, 'Failed to find absolute path to Dart VM');
 
   // Locate Dart SDK
   final dartSdk = dartVm.parent.parent;
   print('Dart SDK... ${dartSdk.path}');
 
   // Locate dart_api.h
-  final headerPath = join('include', 'dart_api.h');
-  final headerFile = File.fromUri(dartSdk.uri.resolve(headerPath));
-  abortIf(!headerFile.existsSync(), 'Failed to find $headerPath');
+  final headerRelUriPath = 'include/dart_api.h';
+  final headerFile = File.fromUri(dartSdk.uri.resolve(headerRelUriPath));
+  abortIf(!headerFile.existsSync(), 'Failed to find $headerRelUriPath');
 
-  // Run pub list to determine the location of the GPIO package being used
-  final pub = File.fromUri(dartSdk.uri.resolve(join('bin', 'pub')));
-  String pubOut =
+  // Run pub list to determine the location of the I2C package being used
+  final pub = File.fromUri(dartSdk.uri.resolve('bin/pub'));
+  var pubOut =
       Process.runSync(pub.path, ['list-package-dirs']).stdout as String;
-  Map<String, dynamic> pubResult = jsonDecode(pubOut) as Map<String, dynamic>;
+  var pubResult = jsonDecode(pubOut) as Map<String, dynamic>;
   assertNoPubListError(pubResult);
-  String dirName = pubResult['packages'][pkgName] as String;
+  var dirName = pubResult['packages'][pkgName] as String;
   final pkgDir = Directory(dirName);
   print('Building library in ${pkgDir.path}');
 
-  // Display the version of the rpi_gpio being built
+  // Display the version of the rpi_i2c being built
   final pubspecFile = File(join(pkgDir.path, '..', 'pubspec.yaml'));
   abortIf(!pubspecFile.existsSync(), 'Failed to find ${pubspecFile.path}');
   final pubspec = pubspecFile.readAsStringSync();
@@ -55,8 +50,8 @@ main(List<String> args) {
 /// Parse the given content and return the version string
 String parseVersion(String pubspec) {
   var key = 'version:';
-  int start = pubspec.indexOf(key) + key.length;
-  int end = pubspec.indexOf('\n', start);
+  var start = pubspec.indexOf(key) + key.length;
+  var end = pubspec.indexOf('\n', start);
   return pubspec.substring(start, end).trim();
 }
 
@@ -72,11 +67,10 @@ void abortIf(bool condition, String message) {
 void assertNoPubListError(Map<String, dynamic> pubResult) {
   var error = pubResult['error'];
   if (error == null) {
-    Map<String, dynamic>? packages =
-        pubResult['packages'] as Map<String, dynamic>?;
+    var packages = pubResult['packages'] as Map<String, dynamic>?;
     if (packages != null) {
-      var rpiGpio = packages[pkgName];
-      if (rpiGpio != null) {
+      var pkg = packages[pkgName];
+      if (pkg != null) {
         return;
       }
       print('Cannot find $pkgName in pub list result');
@@ -92,14 +86,18 @@ void assertNoPubListError(Map<String, dynamic> pubResult) {
 }
 
 /// Assert that this script is executing on the Raspberry Pi.
-assertRunningOnRaspberryPi() {
+void assertRunningOnRaspberryPi() {
   // Check for Windows 11 running on RPi
   if (Platform.isWindows) {
+    // TODO detect typical install on RPi
     print('Running Windows... hopefully on the Raspberry Pi...');
     return;
   }
+  if (Platform.isMacOS || Platform.isIOS) {
+    print('Not running on Raspberry Pi... skipping build');
+    throw 'Aborting build';
+  }
   // Check for typical Raspbian install
   if (Directory('/home/pi').existsSync()) return;
-  print('Not running on Raspberry Pi... skipping build');
-  throw 'Aborting build';
+  print('Typical setup not found... hopefully running on the Raspberry Pi...');
 }

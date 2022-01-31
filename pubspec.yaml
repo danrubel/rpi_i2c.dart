@@ -1,6 +1,5 @@
 name: rpi_i2c
-version: 0.3.0
-author: Dan Rubel <danrubel@google.com>
+version: 0.3.1
 description: rpi_i2c is a Dart library for using I2C on the Raspberry Pi.
 homepage: https://github.com/danrubel/rpi_i2c.dart
 environment:

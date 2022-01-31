@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+ * add I2C readWord API
+ * add TSL2561 Ambient Light Sensor (Grove Light Sensor v1.1) example
+
 ## 0.3.0
  * migrate to null safety
 

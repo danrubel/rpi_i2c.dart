@@ -47,19 +47,14 @@ program which in turn calls the [build_native](lib/src/native/build_native) scri
 to compile the native librpi_i2c_ext.so library for the rpi_i2c package.
 
 ## Examples
+| File                                     | Description |
+| ----                                     | ----------- |
+| [example.dart](example/example.dart)     | instantiating and accessing an I2C device
+| [mpl3115a2.dart](example/mpl3115a2.dart) | [Mpl3115a2 pressure sensor](https://www.nxp.com/docs/en/data-sheet/MPL3115A2.pdf) with altimetry
+| [ttp229.dart](example/ttp229.dart)       | [TTP229 I2C touchpad](https://www.tontek.com.tw/uploads/product/106/TTP229-LSF_V1.0_EN.pdf)
+| [tsl2561.dart](example/tsl2561.dart)     | [TSL2651 light sensor](https://ams.com/en/tsl2561) which is embedded in the Grove Light Sensor v1.1
 
- * [example.dart](example/example.dart) demonstrates instantiating and accessing an I2C device
-
- * [mpl3115a2.dart](example/mpl3115a2.dart) demonstrates how the I2C API is used
-   to interact with a [Mpl3115a2](https://www.nxp.com/docs/en/data-sheet/MPL3115A2.pdf)
-
- * [example_ttp229.dart](example/example_ttp229.dart) demonstrates instantiating and accessing
-   the TTP229 touchpad over I2C
-
- * [ttp229.dart](example/ttp229.dart) demonstrates how the I2C API is used
-   to interact with a [TTP229](See https://www.tontek.com.tw/uploads/product/106/TTP229-LSF_V1.0_EN.pdf) touchpad
-
-Both of these devices can be connected to the I2C bus at the same time.
+Multiple devices can be connected to the I2C bus at the same time.
 Connect the following [pins on the Raspberry Pi](https://www.raspberrypi.org/documentation/usage/gpio/)
 to pins on the [Adafruit MPL3115A2](https://www.adafruit.com/product/1893)
 and pins on the [TTP229 Touchpad](https://robotdyn.com/16-keys-capacitive-touch-ttp229-i2c-module.html)
@@ -75,7 +70,7 @@ as per [I2C pullup resistor recommendations](https://www.google.com/search?q=i2c
 | -------------------- | --------- |---------- | ----------------------- |
 | PIN #1 (3.3v)        | 3V        | 3V        |                         |
 | PIN #3 (SDA1 / I2C)  | SDA       | SDA       | 4.7K resistor to 3.3V   |
-| PIN #3 (SDL1 / I2C)  | SDL       | SDL       | 4.7K resistor to 3.3V   |
+| PIN #5 (SDL1 / I2C)  | SDL       | SDL       | 4.7K resistor to 3.3V   |
 | PIN #6 (GND)         | GND       | GND       |                         |
 
 With thanks to Pierre Henelle for the [RPi_MPL3115A2 library](https://github.com/phenelle/RPi_MPL3115A2)

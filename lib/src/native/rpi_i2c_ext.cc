@@ -199,6 +199,33 @@ void readBytes(Dart_NativeArguments arguments) {
   Dart_ExitScope();
 }
 
+// Read a 16 bit value from a register or two consecutive registers on the device.
+// Negative return values indicate an error.
+//int _readWord(int fd, int register) native "readWord";
+void readWord(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+  Dart_Handle arg1 = HandleError(Dart_GetNativeArgument(arguments, 1));
+  Dart_Handle arg2 = HandleError(Dart_GetNativeArgument(arguments, 2));
+
+  int64_t fd;
+  int64_t reg;
+  HandleError(Dart_IntegerToInt64(arg1, &fd));
+  HandleError(Dart_IntegerToInt64(arg2, &reg));
+
+  int64_t result = 0;
+  union i2c_smbus_data data;
+  if (i2c_smbus_access(fd, I2C_SMBUS_READ, reg, I2C_SMBUS_WORD_DATA, &data)) {
+    result = -1;
+    lastErrno = errno;
+  } else {
+    result = data.word & 0xFFFF;
+    lastErrno = 0;
+  }
+
+  Dart_SetIntegerReturnValue(arguments, result);
+  Dart_ExitScope();
+}
+
 // Write a byte to the device.
 // Negative return values indicate an error.
 //int _writeByte(int fd, int register, int data) native "writeByte";
@@ -241,6 +268,7 @@ FunctionLookup function_list[] = {
   {"lastError", lastError},
   {"readByte", readByte},
   {"readBytes", readBytes},
+  {"readWord", readWord},
   {"setupDevice", setupDevice},
   {"writeByte", writeByte},
   {NULL, NULL}
