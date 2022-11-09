@@ -38,7 +38,7 @@ class Ttp229Keys {
   /// where key #1 is at index 0.
   bool key(int index) {
     if (index < 0 || 15 < index) throw 'index out of bounds: $index';
-    int bits = bytes[index ~/ 8];
+    var bits = bytes[index ~/ 8];
     return (bits & (1 << (7 - index % 8))) != 0;
   }
 }
